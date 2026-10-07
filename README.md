@@ -63,6 +63,11 @@ if is_walking:
     step_count += ts * fw
 ```
 
+> [!NOTE]
+> **Steps vs. Strides:**
+> In biomechanics, a **step** is the movement from one foot to the opposite foot (left $\to$ right), while a **stride** is a full gait cycle by the same foot (left $\to$ right $\to$ left). When a phone is in a pocket, the gyroscope captures the pendulum swing of that specific leg, so $f_w$ measures **stride frequency** ($\approx 1\,\text{Hz}$). The lecture formula $c = t_s \cdot f_w$ outputs the number of **strides**; to get individual footsteps (as shown by Fitbit or Apple Health), multiply by 2 ($1\,\text{stride} = 2\,\text{steps}$).
+
+
 ---
 
 ## 🚀 Running the Project
