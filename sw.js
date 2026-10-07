@@ -1,46 +1,8 @@
-// Service Worker: Network-First to ensure updates on GitHub Pages are immediately loaded
-const CACHE_NAME = 'walk-counter-v3';
-
-self.addEventListener('install', (event) => {
-  self.skipWaiting();
-});
-
+// Unregister service worker and purge all cache to fix stale cached versions
+self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      );
-    })
-  );
-  self.clients.claim();
-});
-
-self.addEventListener('fetch', (event) => {
-  // Network first, cache fallback
-  event.respondWith(
-    fetch(event.request)
-      .then((networkResponse) => {
-        // Cache successful responses for offline use
-        if (networkResponse && networkResponse.status === 200) {
-          const responseClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
-        }
-        return networkResponse;
-      })
-      .catch(() => {
-        return caches.match(event.request).then((cachedResponse) => {
-          if (cachedResponse) return cachedResponse;
-          if (event.request.mode === 'navigate') {
-            return caches.match('./index.html');
-          }
-        });
-      })
+    caches.keys().then((keys) => Promise.all(keys.map((k) => caches.delete(k))))
+      .then(() => self.registration.unregister())
   );
 });
