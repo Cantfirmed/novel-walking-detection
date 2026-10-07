@@ -1215,7 +1215,20 @@ function toggleRecording() {
   }
 }
 
-function startLiveRecording() {
+async function startLiveRecording() {
+  // iOS Safari requires explicit user-gesture permission request
+  if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+    try {
+      const resp = await DeviceMotionEvent.requestPermission();
+      if (resp !== 'granted') {
+        alert('Motion sensor access was denied. Please allow motion sensors to record your walk.');
+        return;
+      }
+    } catch (e) {
+      console.log('Motion permission prompt error:', e);
+    }
+  }
+
   isRecording = true;
   recordedSamples = [];
   recordStartTime = performance.now() / 1000.0;
