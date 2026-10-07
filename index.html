@@ -4,9 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#0b1120">
-  <meta name="description" content="Wearable IMU walking detection and step counting PWA using smartphone gyroscope frequency analysis">
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon-192.png">
   <title>WalkCounter — IMU Walking Detection & Step Counter</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -96,46 +93,58 @@
       font-weight: 700;
     }
 
-    /* Explanation Banner */
-    .top-explanation {
-      background: rgba(56, 189, 248, 0.05);
-      border: 1px solid rgba(56, 189, 248, 0.25);
+    /* Live Sensor Diagnostics Card */
+    .diagnostic-box {
+      background: var(--card-inner);
+      border: 1px solid var(--card-border);
       border-radius: 10px;
       padding: 14px 18px;
       margin-bottom: 20px;
     }
-    .top-explanation-header {
+    .diagnostic-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      cursor: pointer;
-    }
-    .top-explanation-title {
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .variable-chips {
-      display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-top: 10px;
+      margin-bottom: 10px;
     }
-    .chip {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 6px;
+    .diag-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       padding: 4px 10px;
+      border-radius: 20px;
       font-size: 0.8rem;
-      color: #e2e8f0;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
     }
-    .chip strong {
+    .diag-pill.active {
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+    .diag-pill.warning {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .diag-values {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+    .diag-item {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .diag-item strong {
       color: var(--primary);
-      font-weight: 700;
-      margin-right: 4px;
     }
 
     /* Recorder Section */
@@ -147,42 +156,17 @@
       margin-bottom: 24px;
       text-align: center;
     }
-    .recorder-status-banner {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-bottom: 20px;
-    }
-    .dot-pulse {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--success);
-    }
-    .dot-pulse.recording {
-      background: var(--danger);
-      animation: pulse 1s infinite alternate;
-    }
-    @keyframes pulse {
-      0% { opacity: 0.4; transform: scale(0.9); }
-      100% { opacity: 1.0; transform: scale(1.2); }
-    }
     .recorder-timer {
       font-size: 3.2rem;
       font-weight: 800;
       font-variant-numeric: tabular-nums;
-      margin: 10px 0;
+      margin: 8px 0;
       color: #fff;
     }
     .recorder-samples-sub {
       color: var(--text-muted);
       font-size: 0.9rem;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
     .btn-record-main {
       background: var(--success);
@@ -213,7 +197,7 @@
       justify-content: center;
       gap: 20px;
       flex-wrap: wrap;
-      margin-top: 24px;
+      margin-top: 20px;
       font-size: 0.85rem;
       color: var(--text-muted);
     }
@@ -535,6 +519,48 @@
       border-color: var(--primary);
     }
 
+    /* Explanation Banner */
+    .top-explanation {
+      background: rgba(56, 189, 248, 0.05);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+    }
+    .top-explanation-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+    .top-explanation-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .variable-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .chip {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      color: #e2e8f0;
+    }
+    .chip strong {
+      color: var(--primary);
+      font-weight: 700;
+      margin-right: 4px;
+    }
+
     /* Guide Tab */
     #guideView {
       display: none;
@@ -575,49 +601,10 @@
       background: rgba(255, 255, 255, 0.02);
     }
     .var-symbol {
-      font-family: "Courier New", Courier, monospace;
+      font-family: monospace;
       font-weight: 700;
       color: var(--primary);
       font-size: 1.0rem;
-    }
-    .flow-steps {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-      margin-top: 16px;
-    }
-    .flow-card {
-      background: var(--card-inner);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 16px;
-      position: relative;
-    }
-    .flow-number {
-      position: absolute;
-      top: -10px;
-      right: -10px;
-      background: var(--primary);
-      color: #041226;
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 0.8rem;
-    }
-    .flow-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 6px;
-    }
-    .flow-desc {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.4;
     }
   </style>
 </head>
@@ -626,7 +613,7 @@
   <header>
     <div class="app-branding">
       <h1>🏃 WalkCounter</h1>
-      <div class="subtitle">Wearable IMU Walking Detector & Step Counter (Kang et al., Sensors 2018)</div>
+      <div class="subtitle">IMU Walking Detection & Step Counter (Kang et al., Sensors 2018)</div>
     </div>
     <div class="nav-tabs">
       <button class="btn-tab active" id="tab-recorder" onclick="switchMainTab('recorder')">📱 Live Pocket Recorder</button>
@@ -637,14 +624,30 @@
 
   <!-- ==================== TAB 1: LIVE RECORDER ==================== -->
   <div id="recorderView">
-    <div class="recorder-card">
-      <div class="recorder-status-banner">
-        <span class="dot-pulse" id="recorder-dot"></span>
-        <span id="recorder-status-text">Gyroscope Sensor Ready</span>
+    <!-- Live Sensor Diagnostics Bar -->
+    <div class="diagnostic-box">
+      <div class="diagnostic-header">
+        <span style="font-weight:700; font-size:0.9rem;">📡 Live Sensor Diagnostic</span>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <span class="diag-pill" id="diag-sensor-pill">Checking Sensor...</span>
+          <button id="btn-request-ios" style="display:none; background:var(--primary); color:#041226; font-size:0.75rem; font-weight:700; border:none; padding:4px 10px; border-radius:6px; cursor:pointer;" onclick="requestIOSPermission()">
+            Tap to Enable Sensors (iOS)
+          </button>
+        </div>
       </div>
+      <div class="diag-values">
+        <div class="diag-item">ωx: <strong id="val-cur-wx">0.00</strong> rad/s</div>
+        <div class="diag-item">wy: <strong id="val-cur-wy">0.00</strong> rad/s</div>
+        <div class="diag-item">wz: <strong id="val-cur-wz">0.00</strong> rad/s</div>
+        <div class="diag-item">||ω||: <strong id="val-cur-norm">0.00</strong> rad/s</div>
+        <div class="diag-item">Rate: <strong id="val-cur-rate">0</strong> Hz</div>
+      </div>
+      <div id="diag-warning" style="display:none; color:var(--warning); font-size:0.8rem; margin-top:8px;"></div>
+    </div>
 
+    <div class="recorder-card">
       <div class="recorder-timer" id="recorder-timer-display">00:00</div>
-      <div class="recorder-samples-sub" id="recorder-samples-display">0 samples captured (0.0 Hz)</div>
+      <div class="recorder-samples-sub" id="recorder-samples-display">0 samples captured</div>
 
       <div>
         <button class="btn-record-main" id="btn-toggle-record" onclick="toggleRecording()">
@@ -670,15 +673,12 @@
 
       <div style="margin-top: 20px;">
         <button class="btn-reset" onclick="simulateWalk()" style="font-size:0.8rem; padding: 6px 14px;">
-          🧪 Simulate Demo Walk (For testing on PC without gyro)
-        </button>
-        <button class="btn-reset" id="btn-ios-perm" style="display:none; font-size:0.8rem; padding: 6px 14px; color:var(--primary);" onclick="requestIOSMotionPermission()">
-          Request iOS Sensor Permission
+          🧪 Simulate Demo Walk (For testing without moving)
         </button>
       </div>
     </div>
 
-    <!-- Live Post-Run Results Card (Shown when stopped) -->
+    <!-- Live Post-Run Results Card -->
     <div id="postRecordSummary" style="display:none; margin-bottom: 24px;">
       <div class="chart-box" style="border-color: var(--primary);">
         <div class="chart-header">
@@ -692,7 +692,7 @@
             </button>
           </div>
         </div>
-        <div class="stats-grid" style="margin-bottom:0;">
+        <div class="stats-grid" style="margin-bottom:16px;">
           <div class="stat-card purple">
             <div class="stat-label">Estimated Steps</div>
             <div class="stat-value" id="rec-res-steps">0</div>
@@ -712,6 +712,16 @@
             <div class="stat-label">Dominant Motion Axis</div>
             <div class="stat-value" id="rec-res-axis">-</div>
             <div class="stat-sub">Max L1 Norm</div>
+          </div>
+        </div>
+
+        <!-- Immediate Waveform Chart -->
+        <div>
+          <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:6px;">
+            Recorded Motion Waveform (||ω|| magnitude):
+          </div>
+          <div class="chart-container" style="height: 180px;">
+            <canvas id="quickRecChart"></canvas>
           </div>
         </div>
       </div>
@@ -760,14 +770,14 @@
           The algorithm resamples 3D gyroscope data to <strong>20 Hz</strong> and shifts a <strong>3.2s sliding window (64 samples)</strong> by <strong>1.2s</strong>. Walking is identified via frequency-domain FFT features, and continuous cadence is fitted with a 4th-order polynomial:
         </p>
         <div class="variable-chips">
-          <div class="chip"><strong>&omega;<sub>x</sub>, &omega;<sub>y</sub>, &omega;<sub>z</sub>:</strong> 3-axis angular rates (rad/s)</div>
-          <div class="chip"><strong>||&omega;||:</strong> Total rotational magnitude &radic;(&omega;<sub>x</sub>&sup2;+&omega;<sub>y</sub>&sup2;+&omega;<sub>z</sub>&sup2;)</div>
-          <div class="chip"><strong>Sensitive Axis:</strong> Axis with max &sum;|&omega;<sub>a</sub>| (Eq. 1)</div>
-          <div class="chip"><strong>&omega;&#772;<sub>c</sub>:</strong> Mean energy in walking band (0.6&ndash;2.0 Hz)</div>
-          <div class="chip"><strong>&omega;&#772;<sub>0</sub>:</strong> Low-frequency baseline drift (0&ndash;0.6 Hz)</div>
-          <div class="chip"><strong>Walking Decision:</strong> &omega;&#772;<sub>c</sub> &gt; &omega;&#772;<sub>0</sub> (Eq. 4) AND &omega;&#772;<sub>c</sub> &gt; 10 (Eq. 5)</div>
-          <div class="chip"><strong>Curve Fit:</strong> Argmax of 4th-deg polynomial &rarr; f&#770;<sub>w</sub> (Eq. 7)</div>
-          <div class="chip"><strong>Accumulated Steps:</strong> c = duration &times; f&#772;<sub>w</sub> &times; 2 (Eq. 6)</div>
+          <div class="chip"><strong>ωx, ωy, ωz:</strong> 3-axis angular rates (rad/s)</div>
+          <div class="chip"><strong>||ω||:</strong> Total rotational magnitude √(ωx²+ωy²+ωz²)</div>
+          <div class="chip"><strong>Sensitive Axis:</strong> Axis with max ∑|ωa| (Eq. 1)</div>
+          <div class="chip"><strong>ω̄c:</strong> Mean energy in walking band (0.6–2.0 Hz)</div>
+          <div class="chip"><strong>ω̄0:</strong> Low-frequency baseline drift (0–0.6 Hz)</div>
+          <div class="chip"><strong>Walking Decision:</strong> ω̄c > ω̄0 (Eq. 4) AND ω̄c > τ (Eq. 5)</div>
+          <div class="chip"><strong>Curve Fit:</strong> Argmax of 4th-deg polynomial → f̂w (Eq. 7)</div>
+          <div class="chip"><strong>Accumulated Steps:</strong> c = duration × f̄w × 2 (Eq. 6)</div>
         </div>
       </div>
     </div>
@@ -805,15 +815,15 @@
       <div class="controls-grid">
         <div class="control-item">
           <label>
-            <span>Min Amplitude Threshold (Eq. 5: &omega;&#772;<sub>c</sub> &gt; &tau;)</span>
-            <span class="val" id="disp-amp-thresh">10.0</span>
+            <span>Min Amplitude Threshold (Eq. 5: ω̄c > τ)</span>
+            <span class="val" id="disp-amp-thresh">5.0</span>
           </label>
-          <input type="range" id="param-amp-thresh" min="2" max="30" step="0.5" value="10.0" oninput="updateParams()">
+          <input type="range" id="param-amp-thresh" min="1.0" max="30" step="0.5" value="5.0" oninput="updateParams()">
         </div>
 
         <div class="control-item">
           <label>
-            <span>EMA Frequency Smoothing &alpha; (Eq. 8)</span>
+            <span>EMA Frequency Smoothing α (Eq. 8)</span>
             <span class="val" id="disp-alpha">0.80</span>
           </label>
           <input type="range" id="param-alpha" min="0.1" max="0.95" step="0.05" value="0.80" oninput="updateParams()">
@@ -821,7 +831,7 @@
 
         <div class="control-item">
           <label>
-            <span>Stride &rarr; Step Multiplier</span>
+            <span>Stride → Step Multiplier</span>
             <span class="val" id="disp-multiplier">2.0x (Steps)</span>
           </label>
           <input type="range" id="param-multiplier" min="1.0" max="2.0" step="1.0" value="2.0" oninput="updateParams()">
@@ -831,7 +841,7 @@
           <label>Low Frequency Drift Rejection (Eq. 4)</label>
           <label class="checkbox-label">
             <input type="checkbox" id="param-check-w0" checked onchange="updateParams()">
-            Require &omega;&#772;<sub>c</sub> &gt; &omega;&#772;<sub>0</sub> (Walking band &gt; Drift)
+            Require ω̄c > ω̄0 (Walking band > Drift)
           </label>
         </div>
       </div>
@@ -843,14 +853,13 @@
         <div class="chart-header">
           <div class="chart-title">📈 Tri-Axial Angular Velocity & Timeline</div>
           <div style="font-size:0.8rem; color: var(--text-muted);">
-            Click any block on the timeline bar below to inspect that window's FFT spectrum & poly fit
+            Click any block on the timeline bar below to inspect that window
           </div>
         </div>
         <div class="chart-container" style="height: 240px;">
           <canvas id="gyroChart"></canvas>
         </div>
 
-        <!-- Timeline Bar -->
         <div style="margin-top: 12px; font-size: 0.8rem; color: var(--text-muted); display:flex; justify-content:space-between;">
           <span>Window Classification Timeline (<span style="color:var(--success)">Green = Walking</span>, <span style="color:var(--danger)">Red = Stationary / Idle</span>):</span>
           <span id="timeline-hover-info">Click a block to inspect</span>
@@ -878,30 +887,30 @@
 
             <div class="detail-row">
               <span class="detail-label">Time Window</span>
-              <span class="detail-val" id="win-time-range">0.00s &ndash; 3.20s</span>
+              <span class="detail-val" id="win-time-range">0.00s – 3.20s</span>
             </div>
             <div class="detail-row">
               <span class="detail-label">Chosen Sensitive Axis (Eq. 1)</span>
               <span class="detail-val" id="win-axis-choice">Axis X</span>
             </div>
             <div class="detail-row">
-              <span class="detail-label">L1 Sums (|&omega;x|, |&omega;y|, |&omega;z|)</span>
+              <span class="detail-label">L1 Sums (|ωx|, |ωy|, |ωz|)</span>
               <span class="detail-val" id="win-axis-sums">53.3, 48.1, 42.0</span>
             </div>
             <div class="detail-row">
-              <span class="detail-label">Walking Band Energy &omega;&#772;<sub>c</sub> (0.6&ndash;2.0 Hz)</span>
+              <span class="detail-label">Walking Band Energy ω̄c (0.6–2.0 Hz)</span>
               <span class="detail-val" id="win-wc-val">14.6</span>
             </div>
             <div class="detail-row">
-              <span class="detail-label">Low-Freq Drift &omega;&#772;<sub>0</sub> (0&ndash;0.6 Hz)</span>
+              <span class="detail-label">Low-Freq Drift ω̄0 (0–0.6 Hz)</span>
               <span class="detail-val" id="win-w0-val">12.1</span>
             </div>
             <div class="detail-row">
-              <span class="detail-label">Peak Walking Frequency f&#770;<sub>w</sub> (Eq. 7)</span>
+              <span class="detail-label">Peak Walking Frequency f̂w (Eq. 7)</span>
               <span class="detail-val" id="win-peak-freq">0.94 Hz</span>
             </div>
             <div class="detail-row">
-              <span class="detail-label">Smoothed Frequency f&#772;<sub>w</sub> (Eq. 8)</span>
+              <span class="detail-label">Smoothed Frequency f̄w (Eq. 8)</span>
               <span class="detail-val" id="win-smooth-freq">0.94 Hz</span>
             </div>
             <div class="detail-row">
@@ -938,7 +947,7 @@
     <div class="guide-section">
       <div class="guide-title">📐 IMU Gyroscope Variables & Coordinate Frame</div>
       <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">
-        A 3-axis MEMS gyroscope inside a smartphone or wearable measures angular rotation velocity around each body axis. All values in the CSV files are recorded in <strong>radians per second (rad/s)</strong> (where 1 rad/s &approx; 57.3 deg/s):
+        A 3-axis MEMS gyroscope inside a smartphone measures angular rotation velocity around each body axis in <strong>radians per second (rad/s)</strong>:
       </p>
 
       <table class="guide-table">
@@ -952,133 +961,28 @@
         </thead>
         <tbody>
           <tr>
-            <td><span class="var-symbol">wx</span> (&omega;<sub>x</sub>)</td>
+            <td><span class="var-symbol">wx</span> (ωx)</td>
             <td>Rotation around X-axis</td>
             <td>rad/s</td>
-            <td>Lateral angular velocity (tilt / pitch across the screen width). In front trouser pockets, &omega;<sub>x</sub> or &omega;<sub>y</sub> often captures thigh forward/backward pendulum swing during footsteps.</td>
+            <td>Lateral angular velocity (tilt / pitch across screen width). Captures forward thigh swing in front pockets.</td>
           </tr>
           <tr>
-            <td><span class="var-symbol">wy</span> (&omega;<sub>y</sub>)</td>
+            <td><span class="var-symbol">wy</span> (ωy)</td>
             <td>Rotation around Y-axis</td>
             <td>rad/s</td>
-            <td>Longitudinal angular velocity (along the vertical length of the phone). Prominently stimulated when swinging arms or carrying the smartphone in hand.</td>
+            <td>Longitudinal angular velocity (along phone length). Prominent during arm swing or handheld motion.</td>
           </tr>
           <tr>
-            <td><span class="var-symbol">wz</span> (&omega;<sub>z</sub>)</td>
+            <td><span class="var-symbol">wz</span> (ωz)</td>
             <td>Rotation around Z-axis</td>
             <td>rad/s</td>
-            <td>Yaw / twist velocity perpendicular to the screen face. Captures upper body or hip rotation and corner turning during walking.</td>
+            <td>Yaw / twist velocity perpendicular to screen face. Captures torso twists and corner turning.</td>
           </tr>
           <tr>
-            <td><span class="var-symbol">||&omega;||</span> (Norm)</td>
+            <td><span class="var-symbol">||ω||</span> (Norm)</td>
             <td>Euclidean Magnitude</td>
             <td>rad/s</td>
-            <td>Composite rotational speed: <span class="var-symbol">&radic;(wx&sup2; + wy&sup2; + wz&sup2;)</span>. Represents total rotational intensity regardless of smartphone orientation.</td>
-          </tr>
-          <tr>
-            <td><span class="var-symbol">time</span> (t)</td>
-            <td>Elapsed Time</td>
-            <td>seconds (s)</td>
-            <td>Timestamp recorded at nominal 100 Hz (&Delta;t &approx; 9.9 ms). Linearly resampled to 20 Hz (50 ms) to match the paper's specification.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="guide-section">
-      <div class="guide-title">🔬 Algorithm Parameters & Equations (Sensors 2018 Paper)</div>
-      <table class="guide-table">
-        <thead>
-          <tr>
-            <th style="width: 18%;">Parameter / Variable</th>
-            <th style="width: 18%;">Paper Default</th>
-            <th>Function & Algorithmic Rationale</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><span class="var-symbol">f<sub>s</sub></span> (Sampling Rate)</td>
-            <td>20 Hz</td>
-            <td>Resampling frequency chosen by the authors to minimize battery power while satisfying Shannon-Nyquist (&gt; 2 &times; max human walking cadence &approx; 2 Hz).</td>
-          </tr>
-          <tr>
-            <td><span class="var-symbol">N</span> (Window Length)</td>
-            <td>64 samples (3.2 s)</td>
-            <td>Power-of-two size for fast radix-2 FFT. Spans 3.2 s (&sim;2 gait cycles) yielding discrete frequency bins &Delta;f = 0.3125 Hz.</td>
-          </tr>
-          <tr>
-            <td><span class="var-symbol">Sliding Step</span></td>
-            <td>1.2 s (24 samples)</td>
-            <td>Time increment between consecutive windows. Corresponds roughly to the duration of one step/stride.</td>
-          </tr>
-          <tr>
-            <td><span class="var-symbol">Sensitive Axis</span> (Eq. 1)</td>
-            <td>max &sum; |&omega;<sub>a</sub>(i)|</td>
-            <td>Picks the axis with the highest L1 norm within the 3.2s window. Overcomes arbitrary smartphone orientation without needing costly 3D attitude alignment.</td>
-          </tr>
-          <tr>
-            <td><span class="var-symbol">&omega;&#772;<sub>c</sub></span> (Walking Band)</td>
-            <td>0.6 Hz &ndash; 2.0 Hz</td>
-            <td>Average FFT spectral amplitude across the human walking cadence band (bins k = 2, 3, 4, 5, 6). Contains the primary gait harmonics.</td>
-          </tr>
-          <tr>
-            <td><span class="var-symbol">&omega;&#772;<sub>0</sub></span> (Low-Freq Band)</td>
-            <td>0.0 Hz &ndash; 0.6 Hz</td>
-            <td>Average FFT spectral amplitude in the sub-walking band (bins k = 0, 1). Captures constant bias, sensor drift, and gradual posture shifts.</td>
-          </tr>
-          <tr>
-            <td><span class="var-symbol">&tau;</span> (Min Amplitude Threshold)</td>
-            <td>10.0 (Eq. 5)</td>
-            <td>Threshold for &omega;&#772;<sub>c</sub>. Distinguishes genuine walking from low-amplitude stationary tasks (like standing while typing or texting).</td>
-          </tr>
-          <tr>
-            <td><span class="var-symbol">f&#770;<sub>w</sub></span> (Peak Cadence)</td>
-            <td>Argmax of 4th-deg poly</td>
-            <td>4th-order polynomial A(f) = af&sup4; + bf&sup3; + cf&sup2; + df + e (Eq. 7) is fitted through the 5 walking bins to interpolate the peak frequency without bin-quantization error.</td>
-          </tr>
-          <tr>
-            <td><span class="var-symbol">&alpha;</span> (Smoothing Factor)</td>
-            <td>0.80 (Eq. 8)</td>
-            <td>Exponential moving average weight: f&#772;<sub>w,i</sub> = &alpha;&middot;f&#772;<sub>w,i-1</sub> + (1-&alpha;)&middot;f&#770;<sub>w,i</sub>. Dampens single-window anomalies.</td>
-          </tr>
-          <tr>
-            <td><span class="var-symbol">c</span> (Step Accumulation)</td>
-            <td>t &times; f&#772;<sub>w</sub> &times; 2 (Eq. 6)</td>
-            <td>Total steps are accumulated by multiplying continuous walking duration by cadence. (Factor 2.0 converts strides to footsteps).</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="guide-section">
-      <div class="guide-title">📁 Datasets Overview</div>
-      <table class="guide-table">
-        <thead>
-          <tr>
-            <th style="width: 15%;">Dataset</th>
-            <th style="width: 15%;">Duration</th>
-            <th style="width: 15%;">Expected Pattern</th>
-            <th>Notes & Verification Highlights</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong style="color:var(--primary);">data1.csv</strong></td>
-            <td>18.90 s</td>
-            <td>Continuous Steady Walking</td>
-            <td>Uniform cadence of &sim;100 steps/min. 10 of 14 windows classified as walking; no long idle pauses.</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--primary);">data2.csv</strong></td>
-            <td>47.65 s</td>
-            <td>Walking with 10s Pause</td>
-            <td>Active walking from 0&ndash;20s, stationary stop between 20&ndash;30s, walking resumed from 30&ndash;48s. Perfect for testing walking vs idle detection.</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--primary);">data3.csv</strong></td>
-            <td>39.08 s</td>
-            <td>Variable Cadence / Fast Motion</td>
-            <td>High-energy peaks exceeding 8 rad/s (&sim;450 deg/s) during fast movement intervals (5&ndash;15s and 30&ndash;35s).</td>
+            <td>Composite rotational speed: √(wx² + wy² + wz²). Total rotational energy regardless of orientation.</td>
           </tr>
         </tbody>
       </table>
@@ -1089,9 +993,9 @@
 <script>
 // ==================== SERVICE WORKER REGISTRATION ====================
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(e => console.log('SW registration failed:', e));
-  });
+  navigator.serviceWorker.register('./sw.js').then(reg => {
+    reg.update();
+  }).catch(e => console.log('SW registration error:', e));
 }
 
 // Embedded Benchmark Datasets
@@ -1112,14 +1016,21 @@ let wakeLockSentinel = null;
 let unlockTimeout = null;
 let unlockProgressInterval = null;
 
+// Live sensor monitor
+let lastEventTime = 0;
+let eventCount = 0;
+let liveHz = 0;
+let sensorMode = 'detecting'; // 'gyro', 'accel_fallback', 'none'
+
 // Chart instances
 let gyroChart = null;
 let fftChart = null;
 let stepChart = null;
+let quickRecChart = null;
 
-// Algorithm parameters
+// Default algorithm parameters
 let params = {
-  ampThresh: 10.0,
+  ampThresh: 5.0, // Default 5.0 for gentle walking
   alpha: 0.8,
   multiplier: 2.0,
   checkW0: true,
@@ -1128,87 +1039,119 @@ let params = {
   stepDuration: 1.2
 };
 
-// ==================== TAB NAVIGATION ====================
-function switchMainTab(tab) {
-  currentMainTab = tab;
-  document.getElementById('tab-recorder').classList.toggle('active', tab === 'recorder');
-  document.getElementById('tab-analysis').classList.toggle('active', tab === 'analysis');
-  document.getElementById('tab-guide').classList.toggle('active', tab === 'guide');
+// ==================== LIVE SENSOR MONITORING & PERMISSIONS ====================
+function initSensors() {
+  const pill = document.getElementById('diag-sensor-pill');
+  const iosBtn = document.getElementById('btn-request-ios');
 
-  document.getElementById('recorderView').style.display = (tab === 'recorder') ? 'block' : 'none';
-  document.getElementById('analysisView').style.display = (tab === 'analysis') ? 'block' : 'none';
-  document.getElementById('guideView').style.display = (tab === 'guide') ? 'block' : 'none';
-
-  if (tab === 'analysis') {
-    recomputeAll();
-  }
-}
-
-// ==================== LIVE RECORDER IMPLEMENTATION ====================
-function setupSensorDetection() {
   if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-    // iOS Safari requires explicit permission request on user action
-    document.getElementById('btn-ios-perm').style.display = 'inline-block';
+    // iOS Safari
+    iosBtn.style.display = 'inline-block';
+    pill.innerText = 'Tap to Allow Sensors';
+    pill.className = 'diag-pill warning';
+  } else if ('DeviceMotionEvent' in window) {
+    // Android Chrome or others
+    pill.innerText = 'Listening for Motion...';
+    window.addEventListener('devicemotion', onGlobalDeviceMotion, { passive: true });
+  } else {
+    pill.innerText = 'No Sensor Hardware';
+    pill.className = 'diag-pill warning';
   }
 }
 
-function requestIOSMotionPermission() {
-  DeviceMotionEvent.requestPermission().then(resp => {
-    if (resp === 'granted') {
-      alert('Motion sensor permission granted!');
-      document.getElementById('btn-ios-perm').style.display = 'none';
-    } else {
-      alert('Motion sensor permission was denied.');
-    }
-  }).catch(console.error);
-}
-
-async function requestWakeLock() {
-  try {
-    if ('wakeLock' in navigator && document.getElementById('opt-wake-lock').checked) {
-      wakeLockSentinel = await navigator.wakeLock.request('screen');
-      wakeLockSentinel.addEventListener('release', () => {
-        wakeLockSentinel = null;
-      });
-    }
-  } catch (err) {
-    console.log('Wake lock request error:', err);
+function requestIOSPermission() {
+  if (typeof DeviceMotionEvent.requestPermission === 'function') {
+    DeviceMotionEvent.requestPermission().then(resp => {
+      if (resp === 'granted') {
+        document.getElementById('btn-request-ios').style.display = 'none';
+        const pill = document.getElementById('diag-sensor-pill');
+        pill.innerText = 'Listening for Motion...';
+        window.addEventListener('devicemotion', onGlobalDeviceMotion, { passive: true });
+      } else {
+        alert('Permission was: ' + resp + '. Please allow motion sensors in Safari Settings.');
+      }
+    }).catch(err => {
+      alert('Permission error: ' + err.message);
+    });
   }
 }
 
-function releaseWakeLock() {
-  if (wakeLockSentinel) {
-    wakeLockSentinel.release().catch(console.error);
-    wakeLockSentinel = null;
+// Continuously update live readout to prove to the user whether motion is arriving
+function onGlobalDeviceMotion(event) {
+  eventCount++;
+  const now = performance.now();
+  if (now - lastEventTime >= 1000) {
+    liveHz = Math.round(eventCount / ((now - lastEventTime) / 1000));
+    eventCount = 0;
+    lastEventTime = now;
+    document.getElementById('val-cur-rate').innerText = liveHz;
   }
-}
 
-function triggerHaptic(type) {
-  if (document.getElementById('opt-haptic').checked && 'vibrate' in navigator) {
-    if (type === 'start') navigator.vibrate([100, 50, 100]);
-    else if (type === 'stop') navigator.vibrate([200]);
-  }
-}
-
-function handleDeviceMotion(event) {
-  if (!isRecording) return;
   const rot = event.rotationRate;
-  if (!rot) return;
+  const acc = event.acceleration || event.accelerationIncludingGravity;
 
-  const now = performance.now() / 1000.0;
-  const t = now - recordStartTime;
+  let wx = 0, wy = 0, wz = 0;
+  const pill = document.getElementById('diag-sensor-pill');
 
-  // Convert degrees/sec to radians/sec
-  const toRad = Math.PI / 180.0;
-  const wx = (rot.beta || 0) * toRad;
-  const wy = (rot.gamma || 0) * toRad;
-  const wz = (rot.alpha || 0) * toRad;
+  if (rot && (rot.alpha !== null || rot.beta !== null || rot.gamma !== null)) {
+    sensorMode = 'gyro';
+    const toRad = Math.PI / 180.0;
+    wx = (rot.beta || 0) * toRad;
+    wy = (rot.gamma || 0) * toRad;
+    wz = (rot.alpha || 0) * toRad;
+    pill.innerText = '🟢 Gyroscope Streaming';
+    pill.className = 'diag-pill active';
+    document.getElementById('diag-warning').style.display = 'none';
+  } else if (acc && (acc.x !== null || acc.y !== null || acc.z !== null)) {
+    // Fallback: If device doesn't expose gyroscope, use accelerometer
+    sensorMode = 'accel_fallback';
+    wx = (acc.x || 0);
+    wy = (acc.y || 0);
+    wz = (acc.z || 0);
+    pill.innerText = '⚠️ Accel Fallback (No Gyro)';
+    pill.className = 'diag-pill warning';
+    const warn = document.getElementById('diag-warning');
+    warn.innerText = 'Note: Device only provides acceleration (no gyroscope). Using acceleration fallback.';
+    warn.style.display = 'block';
+  } else {
+    pill.innerText = '⚠️ Null sensor values';
+    pill.className = 'diag-pill warning';
+  }
 
-  recordedSamples.push([Math.round(t * 1000) / 1000, Math.round(wx * 100) / 100, Math.round(wy * 100) / 100, Math.round(wz * 100) / 100]);
+  const norm = Math.sqrt(wx*wx + wy*wy + wz*wz);
+
+  document.getElementById('val-cur-wx').innerText = wx.toFixed(2);
+  document.getElementById('val-cur-wy').innerText = wy.toFixed(2);
+  document.getElementById('val-cur-wz').innerText = wz.toFixed(2);
+  document.getElementById('val-cur-norm').innerText = norm.toFixed(2);
+
+  // If in recording mode, record the sample
+  if (isRecording) {
+    const t = (now / 1000.0) - recordStartTime;
+    recordedSamples.push([
+      Math.round(t * 1000) / 1000,
+      Math.round(wx * 100) / 100,
+      Math.round(wy * 100) / 100,
+      Math.round(wz * 100) / 100
+    ]);
+  }
 }
 
-function toggleRecording() {
+// ==================== RECORDER CONTROLS ====================
+async function toggleRecording() {
   if (!isRecording) {
+    // Check iOS permission if needed
+    if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+      try {
+        const resp = await DeviceMotionEvent.requestPermission();
+        if (resp !== 'granted') {
+          alert('Motion sensor permission is needed. Please allow it.');
+          return;
+        }
+      } catch (e) {
+        console.log('Permission err:', e);
+      }
+    }
     startLiveRecording();
   } else {
     stopLiveRecording();
@@ -1216,19 +1159,6 @@ function toggleRecording() {
 }
 
 async function startLiveRecording() {
-  // iOS Safari requires explicit user-gesture permission request
-  if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-    try {
-      const resp = await DeviceMotionEvent.requestPermission();
-      if (resp !== 'granted') {
-        alert('Motion sensor access was denied. Please allow motion sensors to record your walk.');
-        return;
-      }
-    } catch (e) {
-      console.log('Motion permission prompt error:', e);
-    }
-  }
-
   isRecording = true;
   recordedSamples = [];
   recordStartTime = performance.now() / 1000.0;
@@ -1236,18 +1166,12 @@ async function startLiveRecording() {
   triggerHaptic('start');
   requestWakeLock();
 
-  window.addEventListener('devicemotion', handleDeviceMotion);
-
   document.getElementById('btn-record-label').innerText = 'Stop Recording & Process';
   document.getElementById('btn-record-icon').innerText = '⏹';
   document.getElementById('btn-toggle-record').classList.add('stop-mode');
-  document.getElementById('recorder-dot').classList.add('recording');
-  document.getElementById('recorder-status-text').innerText = 'Recording Motion...';
 
-  // Timer update
   timerInterval = setInterval(updateTimerDisplay, 250);
 
-  // Pocket Lock
   if (document.getElementById('opt-pocket-lock').checked) {
     document.getElementById('pocketLockOverlay').classList.add('active');
   }
@@ -1255,7 +1179,6 @@ async function startLiveRecording() {
 
 function stopLiveRecording() {
   isRecording = false;
-  window.removeEventListener('devicemotion', handleDeviceMotion);
   clearInterval(timerInterval);
   releaseWakeLock();
   triggerHaptic('stop');
@@ -1264,19 +1187,16 @@ function stopLiveRecording() {
   document.getElementById('btn-record-label').innerText = 'Start Pocket Walk';
   document.getElementById('btn-record-icon').innerText = '▶';
   document.getElementById('btn-toggle-record').classList.remove('stop-mode');
-  document.getElementById('recorder-dot').classList.remove('recording');
-  document.getElementById('recorder-status-text').innerText = 'Recording Completed';
 
-  if (recordedSamples.length < 64) {
-    alert(`Recording was too short (${recordedSamples.length} samples). Walk for at least 4-5 seconds to evaluate windows.`);
+  if (recordedSamples.length < 50) {
+    alert(`Captured ${recordedSamples.length} samples. If this is 0, make sure to move or tap "Enable Sensors" on iOS.`);
     return;
   }
 
-  // Save as dataset and run analysis
   DATASETS['recorded'] = recordedSamples;
   document.getElementById('chip-recorded').style.display = 'inline-block';
 
-  // Compute and show post-run summary
+  // Run algorithm immediately
   const res = runAlgorithm('recorded');
   document.getElementById('postRecordSummary').style.display = 'block';
   document.getElementById('rec-res-steps').innerText = res.totalSteps;
@@ -1288,6 +1208,8 @@ function stopLiveRecording() {
   document.getElementById('rec-res-totaltime').innerText = `${res.totalDuration.toFixed(1)} s`;
   document.getElementById('rec-res-samples').innerText = `${res.raw.length} samples`;
   document.getElementById('rec-res-axis').innerText = `Axis ${res.dominantAxis}`;
+
+  renderQuickRecordedChart(recordedSamples);
 }
 
 function updateTimerDisplay() {
@@ -1303,7 +1225,36 @@ function updateTimerDisplay() {
   document.getElementById('recorder-samples-display').innerText = `${recordedSamples.length} samples captured (${hz} Hz)`;
 }
 
-// Pocket Lock Unlock button holding logic
+function renderQuickRecordedChart(raw) {
+  const ctx = document.getElementById('quickRecChart').getContext('2d');
+  const step = Math.max(1, Math.floor(raw.length / 300));
+  const labels = [];
+  const magData = [];
+  for (let i = 0; i < raw.length; i += step) {
+    labels.push(raw[i][0].toFixed(1));
+    const wx = raw[i][1], wy = raw[i][2], wz = raw[i][3];
+    magData.push(Math.sqrt(wx*wx + wy*wy + wz*wz).toFixed(2));
+  }
+  if (quickRecChart) quickRecChart.destroy();
+  quickRecChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{ label: '||ω|| Magnitude', data: magData, borderColor: '#38bdf8', borderWidth: 1.5, pointRadius: 0 }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      scales: {
+        x: { ticks: { color: '#94a3b8', maxTicksLimit: 8 }, grid: { color: '#243552' } },
+        y: { ticks: { color: '#94a3b8' }, grid: { color: '#243552' } }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+}
+
 function startUnlockPress() {
   const bar = document.getElementById('unlockProgressBar');
   bar.style.width = '100%';
@@ -1318,6 +1269,30 @@ function cancelUnlockPress() {
   const bar = document.getElementById('unlockProgressBar');
   bar.style.transition = 'width 0.1s linear';
   bar.style.width = '0%';
+}
+
+async function requestWakeLock() {
+  try {
+    if ('wakeLock' in navigator && document.getElementById('opt-wake-lock').checked) {
+      wakeLockSentinel = await navigator.wakeLock.request('screen');
+    }
+  } catch (err) {
+    console.log('Wake lock err:', err);
+  }
+}
+
+function releaseWakeLock() {
+  if (wakeLockSentinel) {
+    wakeLockSentinel.release().catch(console.error);
+    wakeLockSentinel = null;
+  }
+}
+
+function triggerHaptic(type) {
+  if (document.getElementById('opt-haptic').checked && 'vibrate' in navigator) {
+    if (type === 'start') navigator.vibrate([100, 50, 100]);
+    else if (type === 'stop') navigator.vibrate([200]);
+  }
 }
 
 function inspectRecordedRun() {
@@ -1340,7 +1315,6 @@ function exportRecordedCSV() {
   document.body.removeChild(link);
 }
 
-// Demo simulation for PC testing
 function simulateWalk() {
   recordedSamples = [];
   const duration = 20.0;
@@ -1348,7 +1322,6 @@ function simulateWalk() {
   const N = Math.round(duration * fs);
   for (let i = 0; i < N; i++) {
     const t = i / fs;
-    // Simulate walking cadence around 1.0 Hz stride (2 steps/s)
     const wx = 1.4 * Math.sin(2 * Math.PI * 1.0 * t) + (Math.random() - 0.5) * 0.2;
     const wy = 0.8 * Math.cos(2 * Math.PI * 1.0 * t) + (Math.random() - 0.5) * 0.2;
     const wz = 0.4 * Math.sin(2 * Math.PI * 2.0 * t) + (Math.random() - 0.5) * 0.2;
@@ -1356,11 +1329,15 @@ function simulateWalk() {
   }
   DATASETS['recorded'] = recordedSamples;
   document.getElementById('chip-recorded').style.display = 'inline-block';
-  alert('Simulated 20s pocket walk generated! Opening results.');
-  inspectRecordedRun();
+  alert('Simulated 20s walk created! Analyzing...');
+  const res = runAlgorithm('recorded');
+  document.getElementById('postRecordSummary').style.display = 'block';
+  document.getElementById('rec-res-steps').innerText = res.totalSteps;
+  document.getElementById('rec-res-cadence').innerText = `Cadence: ${res.cadence} steps/min`;
+  document.getElementById('rec-res-walktime').innerText = `${res.walkingDuration.toFixed(1)} s`;
+  renderQuickRecordedChart(recordedSamples);
 }
 
-// Custom CSV file upload handler
 function handleCSVUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -1399,7 +1376,7 @@ function handleCSVUpload(event) {
   reader.readAsText(file);
 }
 
-// ==================== ALGORITHM ENGINE (KANG ET AL. 2018) ====================
+// ==================== ALGORITHM ENGINE ====================
 function resample(raw, fs) {
   const dt = 1.0 / fs;
   const t0 = raw[0][0];
@@ -1444,26 +1421,19 @@ function solvePoly4(x, y) {
   for (let i = 0; i < n; i++) {
     const row = [];
     const xi = x[i];
-    row[4] = 1.0;
-    row[3] = xi;
-    row[2] = xi * xi;
-    row[1] = row[2] * xi;
-    row[0] = row[1] * xi;
+    row[4] = 1.0; row[3] = xi; row[2] = xi * xi; row[1] = row[2] * xi; row[0] = row[1] * xi;
     row.push(y[i]);
     A.push(row);
   }
-
   for (let i = 0; i < n; i++) {
     let maxRow = i;
     for (let k = i + 1; k < n; k++) {
       if (Math.abs(A[k][i]) > Math.abs(A[maxRow][i])) maxRow = k;
     }
     const temp = A[i]; A[i] = A[maxRow]; A[maxRow] = temp;
-
     const pivot = A[i][i];
     if (Math.abs(pivot) < 1e-12) continue;
     for (let k = i; k <= n; k++) A[i][k] /= pivot;
-
     for (let k = 0; k < n; k++) {
       if (k !== i) {
         const factor = A[k][i];
@@ -1471,7 +1441,6 @@ function solvePoly4(x, y) {
       }
     }
   }
-
   return [A[0][5], A[1][5], A[2][5], A[3][5], A[4][5]];
 }
 
@@ -1543,7 +1512,6 @@ function runAlgorithm(datasetKey) {
 
     if (isWalking) {
       walkingDuration += params.stepDuration;
-
       const yVals = walkingIndices.map(idx => amplitudes[idx]);
       fittedPolyCoeffs = solvePoly4(walkingFreqs, yVals);
 
@@ -1563,7 +1531,6 @@ function runAlgorithm(datasetKey) {
       } else {
         fSmooth = params.alpha * fSmooth + (1.0 - params.alpha) * peakFreq;
       }
-
       cumSteps += params.stepDuration * fSmooth * params.multiplier;
     }
 
@@ -1573,16 +1540,11 @@ function runAlgorithm(datasetKey) {
       t_end: slice[slice.length - 1].t,
       t_center: (slice[0].t + slice[slice.length - 1].t) / 2.0,
       chosenAxis: chosenAxis,
-      sumX: sumX,
-      sumY: sumY,
-      sumZ: sumZ,
-      wc: wc,
-      w0: w0,
+      sumX: sumX, sumY: sumY, sumZ: sumZ,
+      wc: wc, w0: w0,
       isWalking: isWalking,
-      cond1: cond1,
-      cond2: cond2,
-      peakFreq: peakFreq,
-      fSmooth: fSmooth,
+      cond1: cond1, cond2: cond2,
+      peakFreq: peakFreq, fSmooth: fSmooth,
       amplitudes: Array.from(amplitudes.slice(0, 16)),
       walkingFreqs: walkingFreqs,
       walkingAmps: walkingIndices.map(idx => amplitudes[idx]),
@@ -1608,6 +1570,21 @@ function runAlgorithm(datasetKey) {
 }
 
 // ==================== VISUALIZATION LOGIC ====================
+function switchMainTab(tab) {
+  currentMainTab = tab;
+  document.getElementById('tab-recorder').classList.toggle('active', tab === 'recorder');
+  document.getElementById('tab-analysis').classList.toggle('active', tab === 'analysis');
+  document.getElementById('tab-guide').classList.toggle('active', tab === 'guide');
+
+  document.getElementById('recorderView').style.display = (tab === 'recorder') ? 'block' : 'none';
+  document.getElementById('analysisView').style.display = (tab === 'analysis') ? 'block' : 'none';
+  document.getElementById('guideView').style.display = (tab === 'guide') ? 'block' : 'none';
+
+  if (tab === 'analysis') {
+    recomputeAll();
+  }
+}
+
 function loadDataset(key) {
   activeDatasetKey = key;
   currentWindowIdx = 0;
@@ -1616,7 +1593,6 @@ function loadDataset(key) {
   });
   const activeBtn = document.getElementById(`chip-${key}`);
   if (activeBtn) activeBtn.classList.add('active');
-
   recomputeAll();
 }
 
@@ -1629,12 +1605,11 @@ function updateParams() {
   document.getElementById('disp-amp-thresh').innerText = params.ampThresh.toFixed(1);
   document.getElementById('disp-alpha').innerText = params.alpha.toFixed(2);
   document.getElementById('disp-multiplier').innerText = params.multiplier === 2.0 ? '2.0x (Steps)' : '1.0x (Strides)';
-
   recomputeAll();
 }
 
 function resetDefaults() {
-  document.getElementById('param-amp-thresh').value = 10.0;
+  document.getElementById('param-amp-thresh').value = 5.0;
   document.getElementById('param-alpha').value = 0.80;
   document.getElementById('param-multiplier').value = 2.0;
   document.getElementById('param-check-w0').checked = true;
@@ -1725,7 +1700,7 @@ function updateInspector() {
     badge.innerText = 'STATIONARY / IDLE ❌';
   }
 
-  document.getElementById('win-time-range').innerText = `${w.t_start.toFixed(2)}s \u2013 ${w.t_end.toFixed(2)}s`;
+  document.getElementById('win-time-range').innerText = `${w.t_start.toFixed(2)}s – ${w.t_end.toFixed(2)}s`;
   document.getElementById('win-axis-choice').innerText = `Axis ${w.chosenAxis}`;
   document.getElementById('win-axis-sums').innerText = `X=${w.sumX.toFixed(1)}, Y=${w.sumY.toFixed(1)}, Z=${w.sumZ.toFixed(1)}`;
   document.getElementById('win-wc-val').innerText = `${w.wc.toFixed(2)} (${w.cond2 ? 'Passed > threshold' : 'Failed < threshold'})`;
@@ -1741,25 +1716,18 @@ function updateInspector() {
 function renderGyroChart() {
   const ctx = document.getElementById('gyroChart').getContext('2d');
   const raw = computedResults.raw;
-
   const step = Math.max(1, Math.floor(raw.length / 700));
   const labels = [];
-  const wxData = [];
-  const wyData = [];
-  const wzData = [];
-  const magData = [];
+  const wxData = [], wyData = [], wzData = [], magData = [];
 
   for (let i = 0; i < raw.length; i += step) {
     const p = raw[i];
     labels.push(p[0]);
-    wxData.push(p[1]);
-    wyData.push(p[2]);
-    wzData.push(p[3]);
+    wxData.push(p[1]); wyData.push(p[2]); wzData.push(p[3]);
     magData.push(Math.sqrt(p[1]*p[1] + p[2]*p[2] + p[3]*p[3]));
   }
 
   if (gyroChart) gyroChart.destroy();
-
   gyroChart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -1807,7 +1775,6 @@ function renderFFTChart(w) {
   }
 
   if (fftChart) fftChart.destroy();
-
   fftChart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -1853,7 +1820,6 @@ function renderStepChart() {
   const freqData = computedResults.windows.map(w => w.fSmooth ? w.fSmooth.toFixed(2) : null);
 
   if (stepChart) stepChart.destroy();
-
   stepChart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -1894,7 +1860,7 @@ function renderStepChart() {
 }
 
 window.onload = () => {
-  setupSensorDetection();
+  initSensors();
 };
 </script>
 </body>
